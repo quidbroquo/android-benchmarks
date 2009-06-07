@@ -10,42 +10,51 @@ import java.util.TreeMap;
 
 public class JavaBenchmark {
 	// Average the result of this many tests
-	private static final int tests = 10;
+	private static final int tests = 200;
+	// To remove outliers we take the median of this many results in each 'test'
+	private static final int internalTests = 5;
+
 	private static final int maxPixels = 100000;
 	private static final int step = 1000;
-	private static SortedMap<Integer, Long> times;
+	private static SortedMap<Integer, Double> times;
 	private static Random rand;
 
 	/**
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		times = new TreeMap<Integer, Long>();
+		times = new TreeMap<Integer, Double>();
 		rand = new Random();
 		int[] unsorted;
-		int i, j;
-		long start, finish, duration;
-		long[] testResults = new long[tests];
 		
-		for (i = step; i <= maxPixels; i += step) {
+		long start, finish, duration;
+		long[] internalResults = new long[internalTests];
+		
+		for (int i = step; i <= maxPixels; i += step) {
 			unsorted = new int[i];
 
-			for (int t = 0; t < tests; t++) {
-				for (j = 0; j < i; j++) {
-					unsorted[j] = rand.nextInt();
-				}
+			long totalDuration = 0;
+			
+			for (int j = 0; j < tests; j++) {
+				for(int k = 0; k < internalTests; k++){
+					for (int l = 0; l < i; l++) {
+						unsorted[l] = rand.nextInt();
+					}
 
-				start = System.currentTimeMillis();
-				QuickSort.quicksort(unsorted);
-				finish = System.currentTimeMillis();
-				duration = finish - start;
-				testResults[t] = duration;
+					start = System.currentTimeMillis();
+					QuickSort.quicksort(unsorted);
+					finish = System.currentTimeMillis();
+					duration = finish - start;
+					internalResults[k] = duration;					
+				}
+				QuickSelect.quickSelect(internalResults, internalTests/2);
+				totalDuration += internalResults[(internalTests/2)-1];
 			}
-			QuickSelect.quickSelect(testResults, tests/2);
-			duration = testResults[tests/2-1];
+			double averageDuration = ((double)totalDuration) / tests;
+			
 			System.out.println(String.format(
-					"Elements: %d Time: %d", i, duration));
-			times.put(i, duration);
+					"Elements: %d Time: %f", i, averageDuration));
+			times.put(i, averageDuration);
 		}
 		publishResults(times);
 		System.out.println("Finished publishing results");
@@ -69,12 +78,12 @@ public class JavaBenchmark {
 	private static BufferedWriter out;
 
 	// csv
-	private static void publishResults(SortedMap<Integer, Long> times) {
+	private static void publishResults(SortedMap<Integer, Double> times) {
 		StringBuilder builder = new StringBuilder();
 		builder.append("elements, Java,\n");
 		for (Integer inputSize : times.keySet()) {
-			builder.append(inputSize.toString() + ","
-					+ times.get(inputSize).toString() + ",\n");
+			builder.append(String.format("%d,%f", inputSize, times
+					.get(inputSize)));
 		}
 		writeToLog(builder.toString());
 	}
