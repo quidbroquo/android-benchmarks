@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="hello">Hello World, Benchmark!</string>
+    <string name="app_name">Android Benchmark</string>
+<string name="jni">Execute JNI test</string>
+<string name="java">Execute Java Test</string>
+</resources>
