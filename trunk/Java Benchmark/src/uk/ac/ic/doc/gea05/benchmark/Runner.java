@@ -4,20 +4,20 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Random;
+import java.util.SortedMap;
+import java.util.TreeMap;
 
 public class Runner {
 	private static final int maxPixels = 100000;
 	private static final int step = 1000;
-	private static Map<Integer,Long> times;
+	private static SortedMap<Integer,Long> times;
 	private static Random rand;
 	/**
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		times = new HashMap<Integer,Long>();
+		times = new TreeMap<Integer,Long>();
 		rand = new Random();
 		int[] unsorted;
 		int i,j,median;
@@ -39,15 +39,29 @@ public class Runner {
 		}
 		publishResults(times);
 	    System.out.println("Finished publishing results");
+	    closeResults();
 	}
+	
+	private static void closeResults() {
+		if(out!=null){
+	    	try {
+				out.close();
+			} catch (IOException e) {
+			    System.out.println("Couldn't close file");
+				e.printStackTrace();
+			}
+	    	out = null;
+	    }		
+	}
+	
 	// Logging
 	// For the logs
 	private static BufferedWriter out;
 	
 	// csv
-    private static void publishResults(Map<Integer, Long> times) {
+    private static void publishResults(SortedMap<Integer, Long> times) {
     	StringBuilder builder = new StringBuilder();
-		builder.append("elements, time,\n");    	
+		builder.append("elements, Java,\n");    	
     	for(Integer inputSize : times.keySet()){
     		builder.append(inputSize.toString() +","+ times.get(inputSize).toString()+",\n");    		
     	}

@@ -5,9 +5,9 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Random;
+import java.util.SortedMap;
+import java.util.TreeMap;
 
 import android.app.Activity;
 import android.os.AsyncTask;
@@ -53,11 +53,11 @@ public class Benchmark extends Activity implements OnClickListener {
 	
 	public class BenchmarkTask extends AsyncTask<Integer, Void, String> {
 
-		private Map<Integer,Long> times;
+		private SortedMap<Integer,Long> times;
 				
 		@Override
 		protected String doInBackground(Integer... ids) {
-			times = new HashMap<Integer,Long>();
+			times = new TreeMap<Integer,Long>();
 			
 			Random rand = new Random();
 			int[] unsorted;
@@ -75,7 +75,7 @@ public class Benchmark extends Activity implements OnClickListener {
 
 				switch (ids[0]) {
 				case R.id.button_java:
-					mode = "Java";
+					mode = "Dalvik";
 					start = System.currentTimeMillis();
 					QuickSort.quicksort(unsorted);
 					finish = System.currentTimeMillis();
@@ -140,9 +140,9 @@ public class Benchmark extends Activity implements OnClickListener {
 	private BufferedWriter out;
 	
 	// csv
-    private void publishResults(Map<Integer, Long> times, String mode) {
+    private void publishResults(SortedMap<Integer, Long> times, String mode) {
     	StringBuilder builder = new StringBuilder();
-		builder.append("elements, time,\n");    	
+		builder.append(String.format("elements, %s,\n",mode));    	
     	for(Integer inputSize : times.keySet()){
     		builder.append(inputSize.toString() +","+ times.get(inputSize).toString()+",\n");    		
     	}
@@ -154,7 +154,7 @@ public class Benchmark extends Activity implements OnClickListener {
     		if(out==null){
     		    Log.i(TAG, "Creating new file");
     			File root = Environment.getExternalStorageDirectory();
-    	        File benchmarkLog = new File(root.toString()+DIRECTORY, mode+"_Benchmark_"+DateFormat.format("M-d-yy-mm",new Date()) +".csv");
+    	        File benchmarkLog = new File(root.toString()+DIRECTORY, "Android_"+mode+"_Benchmark_"+DateFormat.format("M-d-yy-mm",new Date()) +".csv");
     	        benchmarkLog.createNewFile();    	        
     	        FileWriter writer = new FileWriter(benchmarkLog);
     	        out = new BufferedWriter(writer);    	    	    	

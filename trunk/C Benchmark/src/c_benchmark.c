@@ -163,7 +163,7 @@ const int step = 1000;
 int main() {
 	FILE *file;
 	file = fopen("/home/gavin/Work/benchmark/Results/C_Benchmark.csv","w+");
-
+	fprintf(file,"elements, C,\n");
 	struct timeval tv;
 
 	time_t start;
