@@ -104,7 +104,11 @@ public class Benchmark extends Activity implements OnClickListener {
 	}
 
 	@Override public void onStop(){
-		super.onStop();
+		super.onStop();	
+		closeLog();
+	}
+	
+	private void closeLog(){
 		if (out!=null)
 			try {
 				out.close();
@@ -147,14 +151,17 @@ public class Benchmark extends Activity implements OnClickListener {
     		builder.append(inputSize.toString() +","+ times.get(inputSize).toString()+",\n");    		
     	}
     	writeToLog(builder.toString(), mode);
+    	closeLog();    	
 	}
 
 	private void writeToLog(String msg,String mode){    
     	try {
     		if(out==null){
-    		    Log.i(TAG, "Creating new file");
     			File root = Environment.getExternalStorageDirectory();
-    	        File benchmarkLog = new File(root.toString()+DIRECTORY, "Android_"+mode+"_Benchmark_"+DateFormat.format("M-d-yy-mm",new Date()) +".csv");
+    			String filename = "Android_"+mode+"_Benchmark_"+DateFormat.format("M-d-yy-mm",new Date()) +".csv";
+    		    String directory = root.toString() + DIRECTORY;
+    			Log.i(TAG, String.format("Creating new file: %s in Directory: %s",filename,directory));
+    	        File benchmarkLog = new File(directory, filename);
     	        benchmarkLog.createNewFile();    	        
     	        FileWriter writer = new FileWriter(benchmarkLog);
     	        out = new BufferedWriter(writer);    	    	    	

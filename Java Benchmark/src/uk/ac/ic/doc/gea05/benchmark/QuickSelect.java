@@ -8,7 +8,7 @@ public class QuickSelect{
      * @param a an array of Comparable items.
      * @param k the desired rank (1 is minimum) in the entire array.
      */
-    public static void quickSelect(int [ ] a, int k ) {
+    public static void quickSelect(long [ ] a, int k ) {
         quickSelect( a, 0, a.length - 1, k );
     }
     
@@ -21,7 +21,7 @@ public class QuickSelect{
      * @param high the right-most index of the subarray.
      * @param k the desired rank (1 is minimum) in the entire array.
      */
-    private static void quickSelect( int [ ] a, int low, int high, int k ) {
+    private static void quickSelect( long [ ] a, int low, int high, int k ) {
         if( low + CUTOFF > high )
             insertionSort( a, low, high );
         else {
@@ -36,7 +36,7 @@ public class QuickSelect{
             
             // Place pivot at position high - 1
             swapReferences( a, middle, high - 1 );
-            int pivot = a[ high - 1 ];
+            long pivot = a[ high - 1 ];
             
             // Begin partitioning
             int i, j;
@@ -69,9 +69,9 @@ public class QuickSelect{
      * @param low the left-most index of the subarray.
      * @param n the number of items to sort.
      */
-    private static void insertionSort( int [ ] a, int low, int high ) {
+    private static void insertionSort( long [ ] a, int low, int high ) {
         for( int p = low + 1; p <= high; p++ ) {
-            int tmp = a[ p ];
+            long tmp = a[ p ];
             int j;
             
             for( j = p; j > low && tmp < a[ j - 1 ]; j-- )
@@ -89,8 +89,8 @@ public class QuickSelect{
      * @param index1 the index of the first object.
      * @param index2 the index of the second object.
      */
-    public static final void swapReferences( int[] a, int index1, int index2 ) {
-        int tmp = a[ index1 ];
+    public static final void swapReferences( long[] a, int index1, int index2 ) {
+        long tmp = a[ index1 ];
         a[ index1 ] = a[ index2 ];
         a[ index2 ] = tmp;
     }
