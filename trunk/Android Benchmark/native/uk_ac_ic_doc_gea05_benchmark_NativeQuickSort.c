@@ -96,7 +96,7 @@ void quicksort(int a[], int low, int high) {
  * Method:    nQuicksort
  * Signature: ([III)V
  */
-JNIEXPORT void JNICALL Java_uk_ac_ic_doc_gea05_benchmark_QuickSort_nQuicksort(
+JNIEXPORT void JNICALL Java_uk_ac_ic_doc_gea05_benchmark_NativeQuickSort_nQuicksort(
 		JNIEnv *env, jclass c, jintArray jInput) {
 	// Copy the arrays into main memory
 	jint* cInput = (*env)->GetIntArrayElements(env, jInput, 0);

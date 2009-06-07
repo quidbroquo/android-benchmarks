@@ -83,7 +83,7 @@ public class Benchmark extends Activity implements OnClickListener {
 				case R.id.button_jni:
 					mode = "JNI";
 					start = System.currentTimeMillis();
-					QuickSort.nQuicksort(unsorted);
+					NativeQuickSort.nQuicksort(unsorted);
 					finish = System.currentTimeMillis();
 					break;
 				}

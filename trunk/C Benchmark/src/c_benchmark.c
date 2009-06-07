@@ -164,7 +164,8 @@ void quicksort(int a[], int low, int high) {
 
 const int maxPixels = 100000;
 const int step = 1000;
-const int tests = 10;
+const int tests = 200;
+const int internalTests = 5;
 
 int main() {
 	FILE *file;
@@ -172,34 +173,37 @@ int main() {
 	fprintf(file, "elements, C,\n");
 	struct timeval tv;
 
-	time_t start;
-	time_t stop;
-	unsigned duration;
-
-	int i, j, t;
-	unsigned testResults[tests];
-
+	int i;
 	for (i = step; i <= maxPixels; i += step) {
 
+		unsigned testResults[tests];
 		int unsorted[i];
-		for (t = 0; t < tests; t++) {
-			for (j = 0; j < i; j++) {
-				unsorted[j] = rand();
+		unsigned totalDuration = 0;
+		int j;
+		for (j = 0; j < tests; j++) {
+			int k;
+			for (k = 0; k < internalTests; k++) {
+
+				int l;
+				for (l = 0; l < i; l++) {
+					unsorted[l] = rand();
+				}
+
+				gettimeofday(&tv, 0);
+				time_t start = tv.tv_usec;
+				quicksort(unsorted, 0, i - 1);
+				gettimeofday(&tv, 0);
+				time_t stop = tv.tv_usec;
+
+				testResults[k] = stop - start;
 			}
-
-			gettimeofday(&tv, 0);
-			start = tv.tv_usec;
-			quicksort(unsorted, 0, i - 1);
-			gettimeofday(&tv, 0);
-			stop = tv.tv_usec;
-
-			testResults[t] = (unsigned) ((float) (stop - start) / 1000) + 0.5;
+			totalDuration += quick_select(testResults, (tests - 1) / 2);
 		}
 
-		duration = quick_select(testResults,(tests-1)/2);
+		double averageDuration = ((double) totalDuration / tests)/1000;
 
-		printf("Elements: %d Time: %d\n", i, duration);
-		fprintf(file, "%d, %d,\n", i, duration);
+		printf("Elements: %d Time(ms): %f\n", i, averageDuration);
+		fprintf(file, "%d, %f,\n", i, averageDuration);
 	}
 
 	return fclose(file);

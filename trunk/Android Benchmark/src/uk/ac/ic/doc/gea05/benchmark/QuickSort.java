@@ -1,10 +1,8 @@
 package uk.ac.ic.doc.gea05.benchmark;
 
 
-public class QuickSort {
-	static{
-		NativeMediator.load(QuickSort.class);
-	}
+public class QuickSort  implements Benchmarkable{
+
 	/**
      * Quicksort algorithm.
      * @param a an array of Comparable items.
@@ -91,6 +89,10 @@ public class QuickSort {
     }
     
 
-    public static native void nQuicksort( int [ ] a);
+	@Override
+	public void benchmark(Object... args) {
+		// TODO Auto-generated method stub
+		
+	}
    
 }
