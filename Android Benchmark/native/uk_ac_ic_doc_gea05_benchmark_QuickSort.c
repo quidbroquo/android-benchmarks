@@ -12,46 +12,82 @@ extern "C" {
 
 //median of 3 quick sort.
 
-void exchange(int list[], int p, int q) {
-	int temp = list[p];
-	list[p] = list[q];
-	list[q] = temp;
+
+const int CUTOFF = 10;
+//median of 3 quick sort.
+
+/**
+ * Method to swap to elements in an array.
+ * @param a an array of objects.
+ * @param index1 the index of the first object.
+ * @param index2 the index of the second object.
+ */
+int swap;
+void swapReferences(int a[], int index1, int index2) {
+	swap = a[index1];
+	a[index1] = a[index2];
+	a[index2] = swap;
 }
 
-int partition(int list[], int p, int r) {
-	int x = list[r];
-	int i = p - 1;
-	int j;
-	for (j = p; j < r; j++) {
-		if (list[j] <= x) {
-			i++;
-			exchange(list, i, j);
-		}
+/**
+ * Internal insertion sort routine for subarrays
+ * that is used by quicksort.
+ * @param a an array of int items.
+ * @param low the left-most index of the subarray.
+ * @param n the number of items to sort.
+ */
+int k, p, tmp;
+void insertionSort(int a[], int low, int high) {
+	for (p = low + 1; p <= high; p++) {
+		tmp = a[p];
+
+		for (k = p; k > low && tmp < a[k - 1]; k--)
+			a[k] = a[k - 1];
+		a[k] = tmp;
 	}
-	exchange(list, i + 1, r);
-	return i + 1;
 }
 
-int median_of_3(int list[], int p, int r) {
-	int median = (p + r) / 2;
+/**
+ * Internal quicksort method that makes recursive calls.
+ * Uses median-of-three partitioning and a cutoff of 10.
+ * @param a an array of int items.
+ * @param low the left-most index of the subarray.
+ * @param high the right-most index of the subarray.
+ */
+int middle, pivot, i, j;
+void quicksort(int a[], int low, int high) {
+	if (low + CUTOFF > high)
+		insertionSort(a, low, high);
+	else {
+		// Sort low, middle, high
+		middle = (low + high) / 2;
+		if (a[middle] < a[low])
+			swapReferences(a, low, middle);
+		if (a[high] < a[low])
+			swapReferences(a, low, high);
+		if (a[high] < a[middle])
+			swapReferences(a, middle, high);
 
-	if (list[p] > list[r])
-		exchange(list, p, r);
-	if (list[p] > list[median])
-		exchange(list, p, median);
-	if (list[r] > list[median])
-		exchange(list, r, median);
+		// Place pivot at position high - 1
+		swapReferences(a, middle, high - 1);
+		pivot = a[high - 1];
 
-	return list[r];
-}
+		// Begin partitioning
+		for (i = low, j = high - 1;;) {
+			while (a[++i] < pivot)
+				;
+			while (pivot < a[--j])
+				;
+			if (i >= j)
+				break;
+			swapReferences(a, i, j);
+		}
 
-void quicksort(int list[], int p, int r) {
-	if (p < r) {
-		median_of_3(list, p, r);
+		// Restore pivot
+		swapReferences(a, i, high - 1);
 
-		int q = partition(list, p, r);
-		quicksort(list, p, q - 1);
-		quicksort(list, q + 1, r);
+		quicksort(a, low, i - 1); // Sort small elements
+		quicksort(a, i + 1, high); // Sort large elements
 	}
 }
 

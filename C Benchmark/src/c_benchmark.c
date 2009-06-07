@@ -158,17 +158,21 @@ void insertionSort(int a[], int low, int high ) {
 
 
 const int maxPixels = 100000;
-const int step = 100;
+const int step = 1000;
 
 int main() {
+	FILE *file;
+	file = fopen("/home/gavin/Work/benchmark/Results/C_Benchmark.csv","w+");
 
 	struct timeval tv;
 
 	time_t start;
 	time_t stop;
+	unsigned duration;
 
 	int i,j,median;
 	for (i = step; i <= maxPixels; i+= step){
+
 		int unsorted[i];
 
 		for(j = 0; j < i; j++){
@@ -181,10 +185,12 @@ int main() {
 		gettimeofday(&tv, 0);
 		median = unsorted[(i-1)/2];
 		stop = tv.tv_usec;
-		printf("Elements: %d Time: %d Median: %d \n",i,(unsigned)((stop-start)/1000),median);
+		duration = (unsigned)((float)(stop-start)/1000)+0.5;
+		printf("Elements: %d Time: %d Median: %d \n",i,duration,median);
+		fprintf(file,"%d, %d,\n",i,duration);
 	}
 
-	return 0;
+	return fclose(file);
 }
 
 

@@ -47,7 +47,7 @@ public class Benchmark extends Activity implements OnClickListener {
 	}
 	
 	private static final int maxPixels = 100000;
-	private static final int step = 100;
+	private static final int step = 1000;
 
 	private int executed = 0;
 	

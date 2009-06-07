@@ -8,7 +8,7 @@ libNative.so : Native.o
 	$(LINKER) -T native/armelf_linux_eabi.xsc -shared -o assets/native/libNative.so native/uk_ac_ic_doc_gea05_benchmark_QuickSort.o	
 
 Native.o : Native.h native/uk_ac_ic_doc_gea05_benchmark_QuickSort.c
-	$(CC) $(INCLUDES) -Wall -fpic -c native/uk_ac_ic_doc_gea05_benchmark_QuickSort.c -o native/uk_ac_ic_doc_gea05_benchmark_QuickSort.o
+	$(CC) $(INCLUDES) -O2 -Wall -fpic -c native/uk_ac_ic_doc_gea05_benchmark_QuickSort.c -o native/uk_ac_ic_doc_gea05_benchmark_QuickSort.o
 
 Native.h :
 	javah -jni -d native -classpath bin/ uk.ac.ic.doc.gea05.benchmark.QuickSort	
