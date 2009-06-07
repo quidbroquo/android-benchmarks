@@ -79,7 +79,6 @@ public class QuickSort {
         for( int p = low + 1; p <= high; p++ ) {
             int tmp = a[ p ];
             int j;
-            
             for( j = p; j > low && tmp < a[ j - 1 ] ; j-- )
                 a[ j ] = a[ j - 1 ];
             a[ j ] = tmp;
