@@ -130,8 +130,8 @@ void quicksort(int list[], int p, int r)
 }
 
 
-const int maxPixels = 0xEFFFFFF;
-const int step = 50000;
+const int maxPixels = 100000;
+const int step = 100;
 
 int main() {
 
@@ -154,7 +154,7 @@ int main() {
 		gettimeofday(&tv, 0);
 		median = unsorted[(i-1)/2];
 		stop = tv.tv_usec;
-		printf("Elements: %d Time: %d Median: %d \n",i,(unsigned)(stop-start),median);
+		printf("Elements: %d Time: %d Median: %d \n",i,(unsigned)((stop-start)/1000),median);
 	}
 
 	return 0;
