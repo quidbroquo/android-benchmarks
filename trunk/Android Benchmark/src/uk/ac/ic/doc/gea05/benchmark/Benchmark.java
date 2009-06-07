@@ -65,6 +65,7 @@ public class Benchmark extends Activity implements OnClickListener {
 			long start = 0;
 			long finish = 0;
 			long duration;
+			String mode = "Unknown";
 			for (i = step; i <= maxPixels; i += step) {
 				unsorted = new int[i];
 
@@ -74,11 +75,13 @@ public class Benchmark extends Activity implements OnClickListener {
 
 				switch (ids[0]) {
 				case R.id.button_java:
+					mode = "Java";
 					start = System.currentTimeMillis();
 					QuickSort.quicksort(unsorted);
 					finish = System.currentTimeMillis();
 					break;
 				case R.id.button_jni:
+					mode = "JNI";
 					start = System.currentTimeMillis();
 					QuickSort.nQuicksort(unsorted);
 					finish = System.currentTimeMillis();
@@ -90,11 +93,8 @@ public class Benchmark extends Activity implements OnClickListener {
 						(finish - start), median));
 				times.put(i, duration);
 			}
-			if(ids[0]==R.id.button_java)
-				writeToLog("Java");
-			else
-				writeToLog("JNI");
-			publishResults(times);
+			
+			publishResults(times,mode);
 			return String.format("Finished : %d", ++executed);
 		}
 		@Override
@@ -103,6 +103,16 @@ public class Benchmark extends Activity implements OnClickListener {
 		}
 	}
 
+	@Override public void onStop(){
+		super.onStop();
+		if (out!=null)
+			try {
+				out.close();
+				out = null;
+			} catch (IOException e) {
+				Log.e(TAG, "Couldn't close file \n"+ Log.getStackTraceString(e));
+			}
+	}
 	private void changeText(String msg){
 		if(tv!=null){
 			tv.setText(msg);
@@ -130,21 +140,21 @@ public class Benchmark extends Activity implements OnClickListener {
 	private BufferedWriter out;
 	
 	// csv
-    private void publishResults(Map<Integer, Long> times) {
+    private void publishResults(Map<Integer, Long> times, String mode) {
     	StringBuilder builder = new StringBuilder();
 		builder.append("elements, time,\n");    	
     	for(Integer inputSize : times.keySet()){
     		builder.append(inputSize.toString() +","+ times.get(inputSize).toString()+",\n");    		
     	}
-    	writeToLog(builder.toString());
+    	writeToLog(builder.toString(), mode);
 	}
 
-	private void writeToLog(String msg){    
+	private void writeToLog(String msg,String mode){    
     	try {
     		if(out==null){
     		    Log.i(TAG, "Creating new file");
     			File root = Environment.getExternalStorageDirectory();
-    	        File benchmarkLog = new File(root.toString()+DIRECTORY, "Benchmark_"+DateFormat.format("M-d-yy-mm",new Date()) +".log");
+    	        File benchmarkLog = new File(root.toString()+DIRECTORY, mode+"_Benchmark_"+DateFormat.format("M-d-yy-mm",new Date()) +".log");
     	        benchmarkLog.createNewFile();    	        
     	        FileWriter writer = new FileWriter(benchmarkLog);
     	        out = new BufferedWriter(writer);    	    	    	
